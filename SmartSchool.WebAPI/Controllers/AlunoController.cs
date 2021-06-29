@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartSchool.WebAPI.Data;
+using SmartSchool.WebAPI.Dtos;
 using SmartSchool.WebAPI.Models;
 
 namespace SmartSchool.WebAPI.Controllers
@@ -11,18 +13,21 @@ namespace SmartSchool.WebAPI.Controllers
     [Route("api/[controller]")]
     public class AlunoController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IRepository _repository;
 
-        public AlunoController(IRepository repository)
+        public AlunoController(IRepository repository, IMapper mapper)
         {
+            _mapper = mapper;
             _repository = repository;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var result = _repository.GetAllAlunos(true);
-            return Ok(result);
+            var alunos = _repository.GetAllAlunos(true);
+
+            return Ok(_mapper.Map<IEnumerable<AlunoDto>>(alunos));
         }
 
         // Route
@@ -35,7 +40,7 @@ namespace SmartSchool.WebAPI.Controllers
             if (aluno == null)
                 return BadRequest("Aluno não foi encontrado!");
 
-            return Ok(aluno);
+            return Ok(_mapper.Map<AlunoDto>(aluno));
         }
 
         // Query String
@@ -48,7 +53,7 @@ namespace SmartSchool.WebAPI.Controllers
             if (aluno == null)
                 return BadRequest("Aluno não foi encontrado!");
 
-            return Ok(aluno);
+            return Ok(_mapper.Map<AlunoDto>(aluno));
         }
 
         // api/aluno/nome
@@ -79,7 +84,7 @@ namespace SmartSchool.WebAPI.Controllers
 
         // api/aluno
         [HttpPost]
-        public IActionResult Post(Aluno aluno)
+        public IActionResult Post(AlunoRegistrarDto model)
         {
             #region Formato antigo usando apenas o context
             // _context.Add(aluno);
@@ -87,19 +92,20 @@ namespace SmartSchool.WebAPI.Controllers
             // return Ok(aluno);
             #endregion
 
+            var aluno = _mapper.Map<Aluno>(model);
             _repository.Add(aluno);
             if (_repository.SaveChanges())
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(aluno));
 
             return BadRequest("Aluno não cadastrado!");
         }
 
         // api/aluno
         [HttpPut("{id}")]
-        public IActionResult Put(int id, Aluno aluno)
+        public IActionResult Put(int id, AlunoRegistrarDto model)
         {
-            var alunoPersistido = _repository.GetAlunoById(id);
-            if (alunoPersistido == null)
+            var aluno = _repository.GetAlunoById(id);
+            if (aluno == null)
                 return BadRequest("Aluno não encontrado!");
 
             #region Formato utilizando apenas o context
@@ -108,19 +114,21 @@ namespace SmartSchool.WebAPI.Controllers
             // return Ok(aluno);
             #endregion
 
+            _mapper.Map(model, aluno);
+
             _repository.Update(aluno);
             if (_repository.SaveChanges())
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(aluno));
 
             return BadRequest("Aluno não atualizado!");
         }
 
         // api/aluno
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, Aluno aluno)
+        public IActionResult Patch(int id, AlunoRegistrarDto model)
         {
-            var alunoPersistido = _repository.GetAlunoById(id);
-            if (alunoPersistido == null)
+            var aluno = _repository.GetAlunoById(id);
+            if (aluno == null)
                 return BadRequest("Aluno não encontrado!");
 
             #region Formato utilizando apenas o context
@@ -129,9 +137,11 @@ namespace SmartSchool.WebAPI.Controllers
             // return Ok(aluno);
             #endregion
 
+            _mapper.Map(model, aluno);
+
             _repository.Update(aluno);
             if (_repository.SaveChanges())
-                return Ok(aluno);
+                return Created($"/api/aluno/{model.Id}", _mapper.Map<AlunoDto>(aluno));
 
             return BadRequest("Aluno não atualizado!");
         }
