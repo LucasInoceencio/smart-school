@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SmartSchool.WebAPI.Dtos
+namespace SmartSchool.WebAPI.V1.Dtos
 {
     public class ProfessorDto
     {

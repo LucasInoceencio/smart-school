@@ -1,9 +1,16 @@
 using System;
 
-namespace SmartSchool.WebAPI.Dtos
+namespace SmartSchool.WebAPI.V2.Dtos
 {
+    /// <summary>
+    /// Classe utilizada para alterar aluno
+    /// </summary>
     public class AlunoDto
     {
+        /// <summary>
+        /// Identificador da chave do Aluno no banco de dados
+        /// </summary>
+        /// <value></value>
         public int Id { get; set; }
         public int Matricula { get; set; }
         public string Nome { get; set; }

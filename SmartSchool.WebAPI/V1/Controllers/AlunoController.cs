@@ -1,16 +1,21 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartSchool.WebAPI.Data;
-using SmartSchool.WebAPI.Dtos;
+using SmartSchool.WebAPI.V1.Dtos;
 using SmartSchool.WebAPI.Models;
 
-namespace SmartSchool.WebAPI.Controllers
+namespace SmartSchool.WebAPI.V1.Controllers
 {
+    /// <summary>
+    /// Classe aluno controller testando
+    /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class AlunoController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -21,7 +26,10 @@ namespace SmartSchool.WebAPI.Controllers
             _mapper = mapper;
             _repository = repository;
         }
-
+        
+        /// <summary>
+        /// Será que vai funcionar essa bagaça
+        /// </summary>
         [HttpGet]
         public IActionResult Get()
         {
@@ -166,6 +174,11 @@ namespace SmartSchool.WebAPI.Controllers
                 return Ok("Aluno deletado!");
 
             return BadRequest("Aluno não deletado!");
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }
