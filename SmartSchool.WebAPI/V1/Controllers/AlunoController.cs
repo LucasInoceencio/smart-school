@@ -38,7 +38,7 @@ namespace SmartSchool.WebAPI.V1.Controllers
             var alunos = await _repository.GetAllAlunosAsync(pageParams, true);
             var alunosResult = _mapper.Map<IEnumerable<AlunoDto>>(alunos);
             Response.AddPagination(alunos.CurrentPage, alunos.PageSize, alunos.TotalCount, alunos.TotalPages);
-            return Ok();
+            return Ok(alunosResult);
         }
 
         // Route

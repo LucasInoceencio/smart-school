@@ -49,7 +49,7 @@ namespace SmartSchool.WebAPI.Data
             if(pageParams.Matricula > 0)
                 query = query.Where(wh => wh.Matricula == pageParams.Matricula);
 
-            if(pageParams != null)
+            if(pageParams.Ativo != null)
                 query = query.Where(wh => wh.Ativo == pageParams.Ativo);
 
             // return await query.ToListAsync();
