@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SmartSchool.WebAPI.Helpers;
 using SmartSchool.WebAPI.Models;
 
 namespace SmartSchool.WebAPI.Data
@@ -21,6 +24,24 @@ namespace SmartSchool.WebAPI.Data
         public void Delete<T>(T entity) where T : class
         {
             _context.Remove(entity);
+        }
+
+        public async Task<PageList<Aluno>> GetAllAlunosAsync(
+            PageParams pageParams,
+            bool includeProfessor = false)
+        {
+            IQueryable<Aluno> query = _context.Alunos;
+
+            if (includeProfessor)
+            {
+                query = query.Include(ic => ic.AlunosDisciplinas)
+                    .ThenInclude(ic => ic.Disciplina)
+                    .ThenInclude(ic => ic.Professor);
+            }
+
+            query = query.AsNoTracking().OrderBy(or => or.Id);
+            // return await query.ToListAsync();
+            return await PageList<Aluno>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
         }
 
         public Aluno[] GetAllAlunos(bool includeProfessor = false)
