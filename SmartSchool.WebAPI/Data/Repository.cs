@@ -40,6 +40,18 @@ namespace SmartSchool.WebAPI.Data
             }
 
             query = query.AsNoTracking().OrderBy(or => or.Id);
+
+            if(!string.IsNullOrEmpty(pageParams.Nome))
+                query = query.Where(wh => 
+                    wh.Nome.ToUpper().Contains(pageParams.Nome.ToUpper())
+                    || wh.Sobrenome.ToUpper().Contains(pageParams.Nome.ToUpper()));
+
+            if(pageParams.Matricula > 0)
+                query = query.Where(wh => wh.Matricula == pageParams.Matricula);
+
+            if(pageParams != null)
+                query = query.Where(wh => wh.Ativo == pageParams.Ativo);
+
             // return await query.ToListAsync();
             return await PageList<Aluno>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
         }
