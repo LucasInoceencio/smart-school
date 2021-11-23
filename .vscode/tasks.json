@@ -37,6 +37,22 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {
+                "ports": [
+                    { "hostPort": 5000, "containerPort": 5000 }
+                ]
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/netcorerest.csproj",
+                "enableDebugging": true
+            }
         }
     ]
 }
